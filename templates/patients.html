@@ -1,0 +1,39 @@
+<!-- templates/patients.html -->
+{% extends "layout.html" %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4>Pacientes</h4>
+  <div>
+    <a class="btn btn-success btn-sm" href="{{ url_for('patient_new') }}">+ Nuevo paciente</a>
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('export_patients') }}">Exportar a Excel</a>
+  </div>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Registro</th><th>Nombre</th><th>CI</th><th>Edad</th><th>Teléfono</th><th>Seguro</th><th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in patients %}
+    <tr>
+      <td>{{ p['reg_number'] }}</td>
+      <td>{{ p['primer_nombre'] }} {{ p['segundo_nombre'] }} {{ p['primer_apellido'] }} {{ p['segundo_apellido'] }}</td>
+      <td>{{ p['ced_prefijo'] }}-{{ p['ced_numero'] }}</td>
+      <td>{{ p['edad'] or '-' }}</td>
+      <td>{{ p['telefono'] }}</td>
+      <td>{{ p['seguro'] }}</td>
+      <td>
+        <a href="{{ url_for('patient_edit', pid=p['id']) }}" class="btn btn-sm btn-primary">Editar</a>
+        <form method="post" action="{{ url_for('patient_delete', pid=p['id']) }}" style="display:inline" onsubmit="return confirm('Eliminar paciente?')">
+          <button class="btn btn-sm btn-danger">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-center">No hay pacientes registrados.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

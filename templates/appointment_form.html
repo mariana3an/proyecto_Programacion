@@ -1,0 +1,97 @@
+<!-- templates/appointment_form.html -->
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <h4>Nueva cita</h4>
+    <form method="post">
+      <div class="mb-3">
+        <label>Paciente</label>
+        <select name="patient_id" id="patient_select" class="form-select" required onchange="fillPatient()">
+          <option value="">-- seleccionar paciente --</option>
+          {% for p in patients %}
+            <option value="{{ p['id'] }}" data-reg="{{ p['reg_number'] }}">{{ p['reg_number'] }} — {{ p['primer_nombre'] }} {{ p['primer_apellido'] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div id="patient_info" class="mb-3" style="display:none; border-left:4px solid #e9ecef; padding-left:10px;">
+        <small>Datos paciente (solo lectura)</small>
+        <div id="info_container"></div>
+        <input type="hidden" name="reg_number" id="reg_number_input">
+      </div>
+
+      <div class="mb-3">
+        <label>Especialidad</label>
+        <select name="especialidad" id="especialidad" class="form-select" onchange="updateDoctors()" required>
+          <option value="">-- Seleccionar --</option>
+          {% for s in specialties %}
+            <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label>Doctor (opcional)</label>
+        <select name="doctor" id="doctor" class="form-select">
+          <option value="(Opcional)">(Opcional)</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3"><label>Fecha</label><input type="date" name="fecha" class="form-control" required></div>
+        <div class="col-md-4 mb-3"><label>Hora</label><select name="hora" class="form-select" required>
+          {% for t in times %}
+            <option value="{{ t }}">{{ t }}</option>
+          {% endfor %}
+        </select></div>
+      </div>
+
+      <div class="mb-3"><label>Motivo</label><textarea name="motivo" class="form-control" rows="3"></textarea></div>
+
+      <button class="btn btn-primary">Agendar</button>
+      <a href="{{ url_for('appointments') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+  const DOCTORS = {{ doctors|tojson }};
+  function updateDoctors(){
+    const esp = document.getElementById('especialidad').value;
+    const sel = document.getElementById('doctor');
+    sel.innerHTML = '';
+    if(!esp || !DOCTORS[esp]) {
+      sel.innerHTML = '<option>(Opcional)</option>';
+      return;
+    }
+    DOCTORS[esp].forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = d;
+      sel.appendChild(opt);
+    });
+  }
+
+  function fillPatient(){
+    const sel = document.getElementById('patient_select');
+    const pid = sel.value;
+    if(!pid) {
+      document.getElementById('patient_info').style.display = 'none';
+      return;
+    }
+    fetch(`/api/patient/${pid}`).then(r => r.json()).then(data => {
+      let html = `<b>${data.primer_nombre} ${data.primer_apellido}</b><br>`;
+      html += `N° Reg: ${data.reg_number} <br>`;
+      html += `CI: ${data.ced_prefijo}-${data.ced_numero} <br>`;
+      html += `Tel: ${data.telefono || '-'} <br>`;
+      html += `Dir: ${data.direccion || '-'} <br>`;
+      document.getElementById('info_container').innerHTML = html;
+      document.getElementById('patient_info').style.display = 'block';
+      document.getElementById('reg_number_input').value = data.reg_number;
+    });
+  }
+</script>
+{% endblock %}
+{% endblock %}

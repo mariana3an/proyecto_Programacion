@@ -1,0 +1,62 @@
+<!-- templates/patient_form.html -->
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <h4>{{ 'Editar paciente' if patient else 'Nuevo paciente' }}</h4>
+    <form method="post">
+      <div class="mb-3">
+        <label>N° Registro</label>
+        <input class="form-control" readonly value="{{ reg_number }}">
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3"><label>Primer nombre</label><input name="primer_nombre" class="form-control" value="{{ patient['primer_nombre'] if patient else '' }}"></div>
+        <div class="col-md-6 mb-3"><label>Segundo nombre</label><input name="segundo_nombre" class="form-control" value="{{ patient['segundo_nombre'] if patient else '' }}"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3"><label>Primer apellido</label><input name="primer_apellido" class="form-control" value="{{ patient['primer_apellido'] if patient else '' }}"></div>
+        <div class="col-md-6 mb-3"><label>Segundo apellido</label><input name="segundo_apellido" class="form-control" value="{{ patient['segundo_apellido'] if patient else '' }}"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2 mb-3"><label>CI</label><select name="ced_prefijo" class="form-select">
+          <option value="V" {% if patient and patient['ced_prefijo']=='V' %}selected{% endif %}>V</option>
+          <option value="E" {% if patient and patient['ced_prefijo']=='E' %}selected{% endif %}>E</option>
+        </select></div>
+        <div class="col-md-10 mb-3"><label>&nbsp;</label><input name="ced_numero" class="form-control" value="{{ patient['ced_numero'] if patient else '' }}"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3"><label>Fecha nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" value="{{ patient['fecha_nacimiento'] if patient else '' }}"></div>
+        <div class="col-md-2 mb-3"><label>Edad</label><input class="form-control" readonly value="{{ patient['edad'] if patient else '' }}"></div>
+        <div class="col-md-6 mb-3"><label>Teléfono</label><input name="telefono" class="form-control" value="{{ patient['telefono'] if patient else '' }}"></div>
+      </div>
+
+      <div class="mb-3"><label>Teléfono domicilio</label><input name="telefono_domicilio" class="form-control" value="{{ patient['telefono_domicilio'] if patient else '' }}"></div>
+      <div class="mb-3"><label>Dirección</label><input name="direccion" class="form-control" value="{{ patient['direccion'] if patient else '' }}"></div>
+
+      <hr>
+      <h6>Seguro (opcional)</h6>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label>Seguro</label>
+          <select name="seguro" class="form-select">
+            <option value="">-- Seleccionar --</option>
+            {% for s in insurances %}
+              <option value="{{ s }}" {% if patient and patient['seguro']==s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6 mb-3"><label>N° Póliza</label><input name="poliza" class="form-control" value="{{ patient['poliza'] if patient else '' }}"></div>
+      </div>
+      <div class="mb-3"><label>Responsable póliza</label><input name="responsable" class="form-control" value="{{ patient['responsable'] if patient else '' }}"></div>
+      <div class="mb-3"><label>Antecedentes</label><textarea name="antecedentes" class="form-control" rows="4">{{ patient['antecedentes'] if patient else '' }}</textarea></div>
+
+      <button class="btn btn-primary">Guardar</button>
+      <a href="{{ url_for('patients') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

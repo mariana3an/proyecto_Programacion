@@ -1,0 +1,49 @@
+<!-- templates/dashboard.html -->
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <h3>Resumen</h3>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <h6>Pacientes</h6>
+        <h2 class="text-primary">{{ total_patients }}</h2>
+        <a href="{{ url_for('patients') }}" class="btn btn-sm btn-outline-primary">Ver</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="card">
+      <div class="card-header">
+        Próximas citas (3 días)
+        <a href="{{ url_for('appointments') }}" class="btn btn-sm btn-link">Ver todas</a>
+      </div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead class="table-light">
+            <tr><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Registro</th><th>Especialidad</th><th>Doctor</th></tr>
+          </thead>
+          <tbody>
+            {% if upcoming %}
+              {% for u in upcoming %}
+                <tr>
+                  <td>{{ u['fecha'] }}</td>
+                  <td>{{ u['hora'] }}</td>
+                  <td>{{ u['primer_nombre'] }} {{ u['primer_apellido'] }}</td>
+                  <td>{{ u['reg_number'] }}</td>
+                  <td>{{ u['especialidad'] }}</td>
+                  <td>{{ u['doctor'] }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="6" class="text-center">No hay citas próximas</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+/* static/css/style.css */
+:root{
+  --primary-blue:#1f6feb;
+  --primary-dark:#1158c7;
+  --soft-gray:#f3f6f9;
+  --text-gray:#334155;
+}
+body { background: var(--soft-gray); color: var(--text-gray); }
+.primary-bg { background: linear-gradient(90deg, var(--primary-blue), var(--primary-dark)); }
+.navbar-brand { font-weight:700; font-size:18px; color: #fff !important; }
+.card { border-radius: 8px; }
+.table thead { background: #ffffff; }
+.footer { border-top:1px solid #e9ecef; }

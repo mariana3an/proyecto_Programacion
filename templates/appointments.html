@@ -1,0 +1,36 @@
+<!-- templates/appointments.html -->
+{% extends "layout.html" %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4>Citas</h4>
+  <div>
+    <a class="btn btn-success btn-sm" href="{{ url_for('appointment_new') }}">+ Nueva cita</a>
+  </div>
+</div>
+
+<table class="table table-hover">
+  <thead class="table-light">
+    <tr><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Registro</th><th>Especialidad</th><th>Doctor</th><th>Motivo</th><th>Acciones</th></tr>
+  </thead>
+  <tbody>
+    {% for a in appointments %}
+    <tr>
+      <td>{{ a['fecha'] }}</td>
+      <td>{{ a['hora'] }}</td>
+      <td>{{ a['primer_nombre'] }} {{ a['primer_apellido'] }}</td>
+      <td>{{ a['reg_number'] }}</td>
+      <td>{{ a['especialidad'] }}</td>
+      <td>{{ a['doctor'] }}</td>
+      <td>{{ a['motivo'] }}</td>
+      <td>
+        <form method="post" action="{{ url_for('appointment_delete', aid=a['id']) }}" style="display:inline" onsubmit="return confirm('Eliminar cita?')">
+          <button class="btn btn-sm btn-danger">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+      <tr><td colspan="8" class="text-center">No hay citas registradas</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
